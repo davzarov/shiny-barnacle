@@ -4,7 +4,6 @@ from typing import List, Tuple
 import numpy as np
 import pandas as pd
 
-from config import FOREIGN_CURRENCY_DIR, LOCAL_CURRENCY_DIR
 from consts import (assets_dict, equity_dict, exercise_dict, liabilities_dict,
                     profit_loss_dict)
 from parsing import check_pdf, list_directory
