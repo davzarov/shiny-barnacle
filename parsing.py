@@ -1,4 +1,6 @@
+import os
 import re
+import shutil
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Generator, List
@@ -11,17 +13,29 @@ from PyPDF2.pdf import PageObject, RectangleObject
 from consts import months_es
 
 
-def list_directory(dir: Path) -> Generator[Path]:
+def list_directory(dir: Path) -> Generator[Path, None, None]:
     for file in dir.iterdir():
         if file.exists() and file.is_file():
-            return file
+            yield file
+
+
+def move_file(origin: Path, destination: Path) -> None:
+    shutil.move(os.fspath(origin), os.fspath(destination))
+
+
+def copy_file(origin: Path, destination: Path) -> None:
+    shutil.copy(os.fspath(origin), os.fspath(destination))
+
+
+def remove_file(file: Path) -> None:
+    file.unlink()
 
 
 def get_title(table: List[str]) -> str:
     return str(table[0])
 
 
-def parse_title(title: str) -> datetime:
+def get_balance_date(title: str) -> datetime:
     """
     Extracts year, month and day of the balance sheet title
     using regex
@@ -31,7 +45,8 @@ def parse_title(title: str) -> datetime:
         r'(?P<day>[\d]+) DE (?P<month>[A-Za-z]+) DE (?P<year>[\d]+)',
         title).groups()
     day = int(d.lstrip("0"))
-    month = months_es[m] if m in months_es.keys() else ""
+    # month = int(months_es[m]) if m in months_es.keys() else ""
+    month = int(months_es[m])
     year = int(y)
     parsed_date = datetime(year, month, day)
 
@@ -63,7 +78,8 @@ def check_pdf(file: Path, target_directory: Path) -> Path:
         reader = PdfFileReader(original)
         page: PageObject = reader.getPage(0)
 
-    # check if page is landscape oriented
+    # file.stem - file name
+    # file.suffix - file extension
     if not is_landscape(page.mediaBox):
         output = target_directory / f"{file.stem}_fixed{file.suffix}"
         # rotate page
@@ -90,5 +106,5 @@ def rotate_pdf(page: PageObject, output: Path) -> None:
     page.rotateClockwise(90)
     writer.addPage(page)
 
-    with output.open() as fixed:
+    with output.open(mode="wb") as fixed:
         writer.write(fixed)

@@ -7,7 +7,7 @@ months_es = {
     "JUNIO": 6,
     "JULIO": 7,
     "AGOSTO": 8,
-    "SETIEMBRE": 9,
+    "SEPTIEMBRE": 9,
     "OCTUBRE": 10,
     "NOVIEMBRE": 11,
     "DICIEMBRE": 12
@@ -70,8 +70,8 @@ equity_dict = {
 exercise_dict = {
     "from": "Resultado del ejercicio antes del impuesto",
     "to": "Menos: Impuesto a la renta",
-    "cols": ["Antes del Impuesto",
-             "Despues de Impuesto"]
+    "cols": ["Antes de Impuestos",
+             "Impuesto a la Renta"]
 }
 
 profit_loss_dict = {

@@ -29,8 +29,12 @@ def get_amount(s: str) -> Union[List[str], str]:
     Returns the result of string numbers matching
     the pattern 000.000.000.000 using regex
     """
-
-    result = re.findall(r'(\d+[\d\.?]*)', str(s))
+    # not aware of decimals
+    # raising 'list' object has
+    # no attribute 'replace'
+    # old_pattern = r'(\d+[\d\.?]*)'
+    pattern = r'(\d+[\d\.?]*)(?:\,\d+)?'
+    result = re.findall(pattern, str(s))
 
     return list_or_first(result)
 
