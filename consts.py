@@ -1,3 +1,16 @@
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+FILES_DIR = BASE_DIR / "balance_sheets" / "continental"
+DATASETS_DIR = BASE_DIR / "datasets"
+
+# local currency directories
+LOCAL_DIR = FILES_DIR / "local"
+LOCAL_DATASETS_DIR = DATASETS_DIR / "local"
+# foreign currency directories
+FOREIGN_DIR = FILES_DIR / "foreign"
+FOREIGN_DATASETS_DIR = DATASETS_DIR / "foreign"
+
 months_es = {
     "ENERO": 1,
     "FEBRERO": 2,
@@ -74,6 +87,7 @@ exercise_dict = {
              "Impuesto a la Renta"]
 }
 
+# using default extraction strategy
 profit_loss_dict = {
     "from": "PERDIDAS POR OBLIGACION POR INTERMEDIACION FINANCIERA S. FINANCIERO",
     "to": "AJUSTES DE RESULTADOS DE EJERCICIOS ANTERIORES",
@@ -95,4 +109,28 @@ profit_loss_dict = {
                     "Otras Ganancias Operativas",
                     "Extraordinarias",
                     "Ajuste de Ejercicios Anteriores"]
+}
+
+profit_dict = {
+    "cols": ["Creditos Vigentes S. Financiero",
+             "Creditos Vigentes S. no Financiero",
+             "Creditos Vencidos",
+             "Valuacion",
+             "Rentas y Diferencia Publicos y Privados",
+             "Desafectacion de Previsones",
+             "Servicio",
+             "Otras Ganancias Operativas",
+             "Extraordinarias",
+             "Ajuste de Ejercicios Anteriores"]
+}
+
+loss_dict = {
+    "cols": ["Obligacion S. Financiero",
+             "Obligacion S. no Financiero",
+             "Valuacion",
+             "Incobrabilidad",
+             "Servicio",
+             "Otras Perdidas Operativas",
+             "Extraordinarias",
+             "Ajuste de Ejercicios Anteriores"]
 }
