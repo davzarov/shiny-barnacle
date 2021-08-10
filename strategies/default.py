@@ -1,21 +1,23 @@
 from datetime import datetime
 from pathlib import Path
-from typing import Any, List, Tuple
+from typing import List, Tuple
+import pandas as pd
 
 import pdfplumber as ppb
 from consts import (assets_dict, equity_dict, exercise_dict, liabilities_dict,
                     profit_loss_dict)
 from pdfplumber.page import Page
-from utils import amount_to_int, get_amount, get_date, get_index
+from utils import amount_to_int, get_amount, get_date, get_index, list_to_df
 
 
-def extract(file: Path) -> Tuple[datetime, List[List[int]]]:
+def extract(file: Path) -> List[pd.DataFrame]:
     """
-    Removes double spaces and empty strings, returning 
-    the title and a cleaned list of lists
+    Returns Dataframes extracted from balance
+    sheets using default strategy
     """
     tbl_start: int = 2
     tbl_end: int = -1
+    extracted_dataframes: List[pd.DataFrame] = []
 
     with ppb.open(file) as f:
         p0: Page = f.pages[0]
@@ -32,14 +34,39 @@ def extract(file: Path) -> Tuple[datetime, List[List[int]]]:
     ex_list = get_exercise_list(cleaned_table)
     pt_list, ls_list = get_profit_and_loss_lists(cleaned_table)
 
-    extracted_lists = [at_list,
-                       li_list,
-                       eq_list,
-                       ex_list,
-                       pt_list,
-                       ls_list]
+    assets_df = list_to_df(at_list, publish_date, assets_dict["cols"])
+    assets_df['Total Activo'] = assets_df.sum(axis=1)
 
-    return publish_date, extracted_lists
+    liabilities_df = list_to_df(li_list,
+                                publish_date,
+                                liabilities_dict["cols"])
+    liabilities_df['Total Pasivo'] = liabilities_df.sum(axis=1)
+
+    equity_df = list_to_df(eq_list, publish_date, equity_dict["cols"])
+
+    exercise_df = list_to_df(ex_list, publish_date, exercise_dict["cols"])
+    exercise_df['Resultado del Ejercicio'] = exercise_df[exercise_dict["cols"][0]] \
+        - exercise_df[exercise_dict["cols"][1]]
+
+    eq_and_ex_df = pd.concat([equity_df, exercise_df], axis=1)
+    eq_and_ex_df['Patrimonio'] = eq_and_ex_df.sum(axis=1)
+
+    liabilities_equity_df = pd.concat([liabilities_df, eq_and_ex_df], axis=1)
+    liabilities_equity_df['Total Pasivo y Patrimonio'] = liabilities_equity_df[['Total Pasivo', 'Patrimonio']] \
+        .sum(axis=1)
+
+    loss_df = list_to_df(ls_list, publish_date, profit_loss_dict["loss_cols"])
+    loss_df['Resultado del Ejercicio'] = pd.Series(
+        exercise_df['Resultado del Ejercicio'])
+    loss_df['Total'] = loss_df.sum(axis=1)
+
+    profit_df = list_to_df(pt_list, publish_date,
+                           profit_loss_dict["profit_cols"])
+    profit_df['Total'] = profit_df.sum(axis=1)
+
+    extracted_dataframes = [assets_df, liabilities_df, loss_df, profit_df]
+
+    return extracted_dataframes
 
 
 def get_assets_list(cleaned_table: List[List[str]]) -> List[int]:

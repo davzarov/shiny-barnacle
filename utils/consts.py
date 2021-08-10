@@ -1,6 +1,6 @@
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 FILES_DIR = BASE_DIR / "balance_sheets" / "continental"
 DATASETS_DIR = BASE_DIR / "datasets"
 
@@ -111,26 +111,48 @@ profit_loss_dict = {
                     "Ajuste de Ejercicios Anteriores"]
 }
 
-profit_dict = {
-    "cols": ["Creditos Vigentes S. Financiero",
-             "Creditos Vigentes S. no Financiero",
-             "Creditos Vencidos",
-             "Valuacion",
-             "Rentas y Diferencia Publicos y Privados",
-             "Desafectacion de Previsones",
-             "Servicio",
-             "Otras Ganancias Operativas",
-             "Extraordinarias",
-             "Ajuste de Ejercicios Anteriores"]
-}
+assets_cols = ["Disponible",
+               "Valores Publicos",
+               "Creditos S. Financiero",
+               "Creditos S. no Financiero",
+               "Creditos Diversos",
+               "Creditos Vencidos",
+               "Inversiones",
+               "Bienes de Uso",
+               "Cargos Diferidos"]
 
-loss_dict = {
-    "cols": ["Obligacion S. Financiero",
+liabilities_cols = ["Obligaciones S. Financiero",
+                    "Obligaciones S. no Financiero",
+                    "Diversas",
+                    "Provisiones y Previsiones",
+                    "Total Pasivo",
+                    "Patrimonio",
+                    "Capital Social",
+                    "Aportes no Capitalizados",
+                    "Ajustes al Patrimonio",
+                    "Reservas",
+                    "Resultados Acumulados",
+                    "Resultado del Ejercicio",
+                    "Antes de Impuestos",
+                    "Impuesto a la Renta"]
+
+loss_cols = ["Obligacion S. Financiero",
              "Obligacion S. no Financiero",
              "Valuacion",
              "Incobrabilidad",
              "Servicio",
              "Otras Perdidas Operativas",
              "Extraordinarias",
-             "Ajuste de Ejercicios Anteriores"]
-}
+             "Ajuste de Ejercicios Anteriores",
+             "Resultado del Ejercicio"]
+
+profit_cols = ["Creditos Vigentes S. Financiero",
+               "Creditos Vigentes S. no Financiero",
+               "Creditos Vencidos",
+               "Valuacion",
+               "Rentas y Diferencia Publicos y Privados",
+               "Desafectacion de Previsones",
+               "Servicio",
+               "Otras Ganancias Operativas",
+               "Extraordinarias",
+               "Ajuste de Ejercicios Anteriores"]

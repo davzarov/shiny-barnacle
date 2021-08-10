@@ -4,8 +4,11 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 from typing import Generator, List, Tuple, Union
+import numpy as np
 
-from consts import months_es
+import pandas as pd
+
+from utils.consts import months_es
 
 
 def list_directory(dir: Path) -> Generator[Path, None, None]:
@@ -43,7 +46,7 @@ def to_currency(n: int, currency: str = "USD") -> str:
     """
 
     if currency == "PYG":
-        return f"{n:,}".replace(",", ".")
+        return f"{n:,}"  # .replace(",", ".")
 
     return f"{n:,}"
 
@@ -54,7 +57,7 @@ def get_amount(s: str) -> Union[List[str], str]:
     the pattern 000.000.000.000 using regex
     """
 
-    # pattern = r'(\d+[\d\.?]*)'
+    # pattern = r'(\d+[\d\.?]*)' not decimal aware
     pattern = r'(\d+[\d\.?]*)(?:\,\d+)?'  # decimal aware
     result = re.findall(pattern, str(s))
 
@@ -84,6 +87,29 @@ def amount_to_int(str_number: str) -> int:
     """
 
     return int(str_number.replace('.', ''))
+
+
+def amounts_to_list(str_amounts: str) -> List[int]:
+    """
+    Returns a list of integers (amounts) extracted from
+    pdf tables
+    """
+
+    cleaned_list = [amount_to_int(i) for i in get_amount(str_amounts)]
+    return cleaned_list
+
+
+def list_to_df(cleaned_list: List[int], published_date: datetime, columns: List[str]) -> pd.DataFrame:
+    """
+    Returns a DataFrame representing a table from the
+    balance sheet
+    """
+
+    list_to_array = np.array(cleaned_list).reshape(1, -1)
+    df = pd.DataFrame(list_to_array,
+                      index=[published_date],
+                      columns=columns)
+    return df
 
 
 def get_index(term: str, table: List[str]) -> Tuple[int, int]:
