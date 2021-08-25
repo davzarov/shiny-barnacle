@@ -51,7 +51,18 @@ def to_currency(n: int, currency: str = "USD") -> str:
     return f"{n:,}"
 
 
-def get_amount(s: str) -> Union[List[str], str]:
+def summary(assets_total: int, liabilities_total: int, profit_total: int, loss_total: int) -> None:
+    """
+    Returns the summary of a balance sheet
+    """
+
+    print("Activo:", to_currency(assets_total, "PYG"))
+    print("Pasivo y Patrimonio:", to_currency(liabilities_total, "PYG"))
+    print("Perdidas:", to_currency(profit_total, "PYG"))
+    print("Ganancias:", to_currency(loss_total, "PYG"))
+
+
+def find_amounts(s: str) -> List[str]:
     """
     Returns the result of string numbers matching
     the pattern 000.000.000.000 using regex
@@ -60,8 +71,9 @@ def get_amount(s: str) -> Union[List[str], str]:
     # pattern = r'(\d+[\d\.?]*)' not decimal aware
     pattern = r'(\d+[\d\.?]*)(?:\,\d+)?'  # decimal aware
     result = re.findall(pattern, str(s))
+    # return list_or_first(result)
 
-    return list_or_first(result)
+    return result
 
 
 def get_date(title: str) -> datetime:
@@ -81,7 +93,7 @@ def get_date(title: str) -> datetime:
     return parsed_date
 
 
-def amount_to_int(str_number: str) -> int:
+def to_int(str_number: str) -> int:
     """
     Removes dots of numbers and parses it to int
     """
@@ -89,13 +101,13 @@ def amount_to_int(str_number: str) -> int:
     return int(str_number.replace('.', ''))
 
 
-def amounts_to_list(str_amounts: str) -> List[int]:
+def amounts_to_int(str_amounts: List[str]) -> List[int]:
     """
     Returns a list of integers (amounts) extracted from
-    pdf tables
+    string tables
     """
 
-    cleaned_list = [amount_to_int(i) for i in get_amount(str_amounts)]
+    cleaned_list = [to_int(i) for i in find_amounts(str_amounts)]
     return cleaned_list
 
 

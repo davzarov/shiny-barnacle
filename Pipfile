@@ -11,6 +11,7 @@ numpy = "*"
 pandas = "*"
 pdfplumber = "*"
 pypdf2 = "*"
+opencv-python = "*"
 
 [requires]
 python_version = "3.8"

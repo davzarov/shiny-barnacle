@@ -7,7 +7,7 @@ import pdfplumber as ppb
 from consts import (assets_dict, equity_dict, exercise_dict, liabilities_dict,
                     profit_loss_dict)
 from pdfplumber.page import Page
-from utils import amount_to_int, get_amount, get_date, get_index, list_to_df
+from utils import to_int, find_amounts, get_date, get_index, list_to_df
 
 
 def extract(file: Path) -> List[pd.DataFrame]:
@@ -71,16 +71,16 @@ def extract(file: Path) -> List[pd.DataFrame]:
 
 def get_assets_list(cleaned_table: List[List[str]]) -> List[int]:
     row, col = get_index(assets_dict["to"], cleaned_table)
-    assets_list = [get_amount(i[col]) for i in cleaned_table[:row + 1]]
-    cleaned_assets_list = [amount_to_int(i) for i in assets_list]
+    assets_list = [find_amounts(i[col]) for i in cleaned_table[:row + 1]]
+    cleaned_assets_list = [to_int(i) for i in assets_list]
 
     return cleaned_assets_list
 
 
 def get_liabilities_list(cleaned_table: List[List[str]]) -> List[int]:
     row, col = get_index(liabilities_dict["to"], cleaned_table)
-    liabilities_list = [get_amount(i[col]) for i in cleaned_table[:row + 1]]
-    cleaned_liabilities_list = [amount_to_int(i) for i in liabilities_list]
+    liabilities_list = [find_amounts(i[col]) for i in cleaned_table[:row + 1]]
+    cleaned_liabilities_list = [to_int(i) for i in liabilities_list]
 
     return cleaned_liabilities_list
 
@@ -91,10 +91,10 @@ def get_equity_list(cleaned_table: List[List[str]]) -> List[int]:
     c0_from, _ = get_index(equity_dict["col_0"]["from"], cleaned_table)
     c0_to, c0 = get_index(equity_dict["col_0"]["to"], cleaned_table)
 
-    equity_list = [*[get_amount(i[c1]) for i in cleaned_table[c1_from:c1_to + 1]],
-                   *[get_amount(i[c0]) for i in cleaned_table[c0_from:c0_to + 1]]]
+    equity_list = [*[find_amounts(i[c1]) for i in cleaned_table[c1_from:c1_to + 1]],
+                   *[find_amounts(i[c0]) for i in cleaned_table[c0_from:c0_to + 1]]]
 
-    cleaned_equity_list = [amount_to_int(i) for i in equity_list]
+    cleaned_equity_list = [to_int(i) for i in equity_list]
 
     return cleaned_equity_list
 
@@ -102,9 +102,9 @@ def get_equity_list(cleaned_table: List[List[str]]) -> List[int]:
 def get_exercise_list(cleaned_table: List[List[str]]) -> List[int]:
     start_row, _ = get_index(exercise_dict["from"], cleaned_table)
     end_row, col = get_index(exercise_dict["to"], cleaned_table)
-    exercise_list = [get_amount(i[col])
+    exercise_list = [find_amounts(i[col])
                      for i in cleaned_table[start_row:end_row + 1]]
-    cleaned_exercise_list = [amount_to_int(i) for i in exercise_list]
+    cleaned_exercise_list = [to_int(i) for i in exercise_list]
 
     return cleaned_exercise_list
 
@@ -120,16 +120,17 @@ def get_profit_and_loss_lists(cleaned_table: List[List[str]]) -> Tuple[List[int]
     end_r, _ = get_index(profit_loss_dict["to"], cleaned_table)
 
     # merged profit and loss
-    profit_loss_list = [get_amount(i) for i in cleaned_table[str_r:end_r + 1]]
+    profit_loss_list = [find_amounts(i)
+                        for i in cleaned_table[str_r:end_r + 1]]
 
     # remaining profit
-    remaining_profit_list = [get_amount(i)
+    remaining_profit_list = [find_amounts(i)
                              for i in cleaned_table[end_r + 1:-1]]
 
-    cleaned_loss_list = [amount_to_int(i[0]) for i in profit_loss_list]
+    cleaned_loss_list = [to_int(i[0]) for i in profit_loss_list]
 
     # join profit with remaining in single list
-    cleaned_profit_list = [*[amount_to_int(i[1]) for i in profit_loss_list],
-                           *[amount_to_int(j) for j in remaining_profit_list]]
+    cleaned_profit_list = [*[to_int(i[1]) for i in profit_loss_list],
+                           *[to_int(j) for j in remaining_profit_list]]
 
     return cleaned_profit_list, cleaned_loss_list
