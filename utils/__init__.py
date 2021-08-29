@@ -4,11 +4,9 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 from typing import Generator, List, Tuple, Union
+
 import numpy as np
-
 import pandas as pd
-
-from utils.consts import months_es
 
 
 def list_directory(dir: Path) -> Generator[Path, None, None]:
@@ -46,7 +44,7 @@ def to_currency(n: int, currency: str = "USD") -> str:
     """
 
     if currency == "PYG":
-        return f"{n:,}"  # .replace(",", ".")
+        return f"{n:,}"
 
     return f"{n:,}"
 
@@ -76,7 +74,38 @@ def find_amounts(s: str) -> List[str]:
     return result
 
 
-def get_date(title: str) -> datetime:
+meses = {
+    "ENERO": 1,
+    "FEBRERO": 2,
+    "MARZO": 3,
+    "ABRIL": 4,
+    "MAYO": 5,
+    "JUNIO": 6,
+    "JULIO": 7,
+    "AGOSTO": 8,
+    "SEPTIEMBRE": 9,
+    "OCTUBRE": 10,
+    "NOVIEMBRE": 11,
+    "DICIEMBRE": 12
+}
+
+months = {
+    "JANUARY": 1,
+    "FEBRUARY": 2,
+    "MARCH": 3,
+    "APRIL": 4,
+    "MAY": 5,
+    "JUNE": 6,
+    "JULY": 7,
+    "AUGUST": 8,
+    "SEPTEMBER": 9,
+    "OCTOBER": 10,
+    "NOVEMBER": 11,
+    "DECEMBER": 12
+}
+
+
+def get_date(title: str, lang: str = "es") -> datetime:
     """
     Extracts year, month and day of the balance sheet title
     using regex
@@ -86,7 +115,7 @@ def get_date(title: str) -> datetime:
         r'(?P<day>[\d]+) DE (?P<month>[A-Za-z]+) DE (?P<year>[\d]+)',
         title).groups()
     day = int(d.lstrip("0"))
-    month = int(months_es[m])  # if m in months_es.keys() else ""
+    month = int(meses[m]) if lang == "es" else int(months[m])
     year = int(y)
     parsed_date = datetime(year, month, day)
 

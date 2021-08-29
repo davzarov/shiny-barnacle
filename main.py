@@ -3,27 +3,16 @@ from typing import List
 
 import pandas as pd
 
+from settings.conf import LOCAL_DATASETS_DIR, LOCAL_DIR, blacklisted
 from strategies.ppb import extract
 from utils import list_directory
-from utils.consts import LOCAL_DATASETS_DIR, LOCAL_DIR
 from utils.pages import check_page_orientation
 
 
 def validate_files(directory: Path) -> List[Path]:
-    # [TODO] improve page orientation detection
-    blacklist: List[str] = [
-        "2015_12.pdf",  # -> not landscape
-        "2016_12.pdf",  # -> not landscape, not opening fixed file
-        "2017_12.pdf",  # -> not landscape
-        "2018_01.pdf",  # -> cannot extract text
-        "2018_02.pdf",  # -> cannot extract text
-        "2020_09.pdf",  # -> cannot extract text
-    ]
-
     valid_files: List[Path] = []
-
     for f in list_directory(directory):
-        if f.name in blacklist:
+        if f.name in blacklisted:
             continue
 
         valid = check_page_orientation(f, directory)
