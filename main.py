@@ -23,12 +23,14 @@ def validate_files(directory: Path) -> List[Path]:
 
 def main() -> None:
     files = validate_files(LOCAL_DIR)
+    files_len = len(files)
     assets_list = []
     liabs_list = []
     loss_list = []
     profit_list = []
 
     for i, file in enumerate(files, start=1):
+        print(f"[INFO]: attempting {file.name}")
         dfs = extract(file)
 
         assets_list.append(dfs[0])
@@ -36,9 +38,9 @@ def main() -> None:
         loss_list.append(dfs[2])
         profit_list.append(dfs[3])
 
-        print(f"{i} - {file.name} done...")
+        print(f"[OK]: {i}/{files_len} - {file.name} done...")
 
-    print("All files parsed, creating DataFrames...")
+    print("[INFO]: All files parsed, creating DataFrames...")
     assets = pd.concat(assets_list).sort_index()
     liabs = pd.concat(liabs_list).sort_index()
     loss = pd.concat(loss_list).sort_index()
@@ -48,7 +50,7 @@ def main() -> None:
     liabs.to_csv(LOCAL_DATASETS_DIR / "liabilities.csv")
     profit.to_csv(LOCAL_DATASETS_DIR / "profit.csv")
     loss.to_csv(LOCAL_DATASETS_DIR / "loss.csv")
-    print("All tasks done!")
+    print("[END]: All tasks done!")
 
 
 if __name__ == "__main__":
