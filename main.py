@@ -3,7 +3,7 @@ from typing import List
 
 import pandas as pd
 
-from settings.conf import LOCAL_DATASETS_DIR, LOCAL_DIR, blacklisted
+from settings.conf import LOCAL_DATASETS_DIR, LOCAL_DIR, blacklisted, false_positives
 from strategies.ppb import extract
 from utils import list_directory
 from utils.pages import check_page_orientation
@@ -12,6 +12,10 @@ from utils.pages import check_page_orientation
 def validate_files(directory: Path) -> List[Path]:
     valid_files: List[Path] = []
     for f in list_directory(directory):
+        if f.name in false_positives:
+            valid_files.append(f)
+            continue
+
         if f.name in blacklisted:
             continue
 

@@ -61,11 +61,10 @@ profit_cols = ["Creditos Vigentes S. Financiero",
                "Ajuste de Ejercicios Anteriores",
                "Total"]
 
-blacklisted = ["2015_12.pdf",  # -> false positive, orientation is landscape
-               "2016_12.pdf",  # -> orientation not landscape, fixed file not opening
-               "2017_12.pdf",  # -> false positive, orientation is landscape
+blacklisted = ["2016_12.pdf",  # -> orientation not landscape, fixed file not opening
                "2018_01.pdf",  # -> text extraction failed, file is scanned
-               "2018_10.pdf",  # -> returns 9 not 10
                "2018_02.pdf",  # -> text extraction failed, file is scanned
-               "2020_09.pdf",  # -> text extraction failed, file is scanned
-               "2021_04.pdf"]  # -> returns 9 not 10
+               "2020_09.pdf"]  # -> text extraction failed, file is scanned
+
+false_positives = ["2015_12.pdf",  # -> false positive
+                   "2017_12.pdf"]  # -> false positive

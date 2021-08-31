@@ -44,7 +44,7 @@ def to_currency(n: int, currency: str = "USD") -> str:
     """
 
     if currency == "PYG":
-        return f"{n:,}"
+        return str(n).translate(str.maketrans(",.", ".,"))
 
     return f"{n:,}"
 
@@ -122,9 +122,16 @@ def get_date(title: str, lang: str = "es") -> datetime:
     return parsed_date
 
 
+def is_digit(str_value: str) -> bool:
+    """Checks if a string represents a digit after replacing 
+    thousand and decimal separators"""
+
+    return str_value.replace(".", "").replace(",", "").isdigit()
+
+
 def to_int(str_number: str) -> int:
     """
-    Removes dots of numbers and parses it to int
+    Removes thousand separators and parses it to int
     """
 
     return int(str_number.replace('.', ''))
