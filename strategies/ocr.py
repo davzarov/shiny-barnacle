@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import cv2
-from consts import LOCAL_DIR
+from settings.conf import LOCAL_DIR
 from wand.image import Image as WandImage
 
 

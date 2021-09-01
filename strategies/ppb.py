@@ -62,8 +62,6 @@ def extract_using_words_visual(file: Path) -> None:
         im.save(f'{file.stem}-after-table.jpg')
         im.reset().draw_rects(p0.extract_words())
         im.save(f'{file.stem}-after-words.jpg')
-        im.reset().draw_rects(p0.extract_words(keep_blank_chars=True))
-        im.save(f'{file.stem}-after-blanks.jpg')
 
 
 def extract_using_words(file: Path) -> Tuple[str, List[Dict[str, Any]]]:

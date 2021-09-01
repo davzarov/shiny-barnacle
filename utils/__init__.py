@@ -8,11 +8,56 @@ from typing import Generator, List, Tuple, Union
 import numpy as np
 import pandas as pd
 
+MESES = {
+    "ENERO": 1,
+    "FEBRERO": 2,
+    "MARZO": 3,
+    "ABRIL": 4,
+    "MAYO": 5,
+    "JUNIO": 6,
+    "JULIO": 7,
+    "AGOSTO": 8,
+    "SEPTIEMBRE": 9,
+    "OCTUBRE": 10,
+    "NOVIEMBRE": 11,
+    "DICIEMBRE": 12
+}
+
+MONTHS = {
+    "JANUARY": 1,
+    "FEBRUARY": 2,
+    "MARCH": 3,
+    "APRIL": 4,
+    "MAY": 5,
+    "JUNE": 6,
+    "JULY": 7,
+    "AUGUST": 8,
+    "SEPTEMBER": 9,
+    "OCTOBER": 10,
+    "NOVEMBER": 11,
+    "DECEMBER": 12
+}
+
 
 def list_directory(dir: Path) -> Generator[Path, None, None]:
     for file in dir.iterdir():
         if file.exists() and file.is_file():
             yield file
+
+
+def is_empty(dir: Path) -> bool:
+    """checks if directory is empty"""
+    return not any(dir.iterdir())
+
+
+def make_file(dir: Path, f: Path):
+    """outputs a file in a dir using the current file features"""
+    output = dir / (f"{f.stem}_fixed{f.suffix}")
+
+    if not output.exists():
+        output.touch()
+
+    return output
 
 
 def move_file(origin: Path, destination: Path) -> None:
@@ -66,43 +111,10 @@ def find_amounts(s: str) -> List[str]:
     the pattern 000.000.000.000 using regex
     """
 
-    # pattern = r'(\d+[\d\.?]*)' not decimal aware
     pattern = r'(\d+[\d\.?]*)(?:\,\d+)?'  # decimal aware
     result = re.findall(pattern, str(s))
-    # return list_or_first(result)
 
     return result
-
-
-meses = {
-    "ENERO": 1,
-    "FEBRERO": 2,
-    "MARZO": 3,
-    "ABRIL": 4,
-    "MAYO": 5,
-    "JUNIO": 6,
-    "JULIO": 7,
-    "AGOSTO": 8,
-    "SEPTIEMBRE": 9,
-    "OCTUBRE": 10,
-    "NOVIEMBRE": 11,
-    "DICIEMBRE": 12
-}
-
-months = {
-    "JANUARY": 1,
-    "FEBRUARY": 2,
-    "MARCH": 3,
-    "APRIL": 4,
-    "MAY": 5,
-    "JUNE": 6,
-    "JULY": 7,
-    "AUGUST": 8,
-    "SEPTEMBER": 9,
-    "OCTOBER": 10,
-    "NOVEMBER": 11,
-    "DECEMBER": 12
-}
 
 
 def get_date(title: str, lang: str = "es") -> datetime:
@@ -115,7 +127,7 @@ def get_date(title: str, lang: str = "es") -> datetime:
         r'(?P<day>[\d]+) DE (?P<month>[A-Za-z]+) DE (?P<year>[\d]+)',
         title).groups()
     day = int(d.lstrip("0"))
-    month = int(meses[m]) if lang == "es" else int(months[m])
+    month = int(MESES[m]) if lang == "es" else int(MONTHS[m])
     year = int(y)
     parsed_date = datetime(year, month, day)
 
