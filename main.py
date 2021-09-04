@@ -13,6 +13,9 @@ from utils.pages import check_page_orientation
 def validate_files(directory: Path) -> List[Path]:
     valid_files: List[Path] = []
     for f in list_directory(directory):
+        if f.suffix != ".pdf":
+            continue
+
         if f.name in false_positives:
             valid_files.append(f)
             continue

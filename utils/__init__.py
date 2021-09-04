@@ -1,9 +1,10 @@
 import os
 import re
+import secrets
 import shutil
 from datetime import datetime
 from pathlib import Path
-from typing import Generator, List, Tuple, Union
+from typing import Generator, List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -47,12 +48,18 @@ def list_directory(dir: Path) -> Generator[Path, None, None]:
 
 def is_empty(dir: Path) -> bool:
     """checks if directory is empty"""
+
     return not any(dir.iterdir())
 
 
-def make_file(dir: Path, f: Path):
-    """outputs a file in a dir using the current file features"""
-    output = dir / (f"{f.stem}_fixed{f.suffix}")
+def make_file(dir: Path, f: Path, ext: Optional[str]) -> Path:
+    """outputs a file in a dir using the current file name"""
+
+    random_hash = secrets.token_urlsafe(8)
+    output = dir / (f"{f.stem}_{random_hash}{f.suffix}")
+
+    if ext:
+        output = dir / (f"{f.stem}_{random_hash}{ext}")
 
     if not output.exists():
         output.touch()

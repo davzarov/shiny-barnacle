@@ -157,4 +157,5 @@ cython_debug/
 # Workspace
 balance_sheets/
 datasets/
+images/
 tests.py

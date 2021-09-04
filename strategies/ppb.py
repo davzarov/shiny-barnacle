@@ -53,7 +53,7 @@ table_settings = {"horizontal_strategy": "text",
                   "text_tolerance": 1}
 
 
-def extract_using_words_visual(file: Path) -> None:
+def extract_words_visual_(file: Path) -> None:
     with pdf.open(file) as f:
         p0: Page = f.pages[0]
         im = p0.to_image(resolution=300)
@@ -64,7 +64,7 @@ def extract_using_words_visual(file: Path) -> None:
         im.save(f'{file.stem}-after-words.jpg')
 
 
-def extract_using_words(file: Path) -> Tuple[str, List[Dict[str, Any]]]:
+def extract_words_(file: Path) -> Tuple[str, List[Dict[str, Any]]]:
 
     with pdf.open(file) as f:
         p0: Page = f.pages[0]
@@ -154,7 +154,7 @@ def extract(f: Path) -> Union[List[pd.DataFrame], None]:
     if not f.is_file():
         return None
 
-    title, words = extract_using_words(f)
+    title, words = extract_words_(f)
     tables = string_tables_from_words(words)
 
     publish_date = get_date(title)

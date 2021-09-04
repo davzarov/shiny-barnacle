@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 autopep8 = "*"
+ipykernel = "*"
 
 [packages]
 numpy = "*"
@@ -12,6 +13,7 @@ pandas = "*"
 pdfplumber = "*"
 pypdf2 = "*"
 opencv-python = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.8"
